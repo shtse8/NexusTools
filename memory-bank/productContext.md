@@ -2,32 +2,36 @@
 
 ## 1. Problem Solved
 
-AI agents like Cline often need to interact with a user's project files to
-perform tasks such as reading code, writing new code, modifying configurations,
-or searching for specific information. Directly granting unrestricted filesystem
-access poses significant security risks. Furthermore, requiring the user to
-manually perform every filesystem action requested by the agent is inefficient
-and hinders the agent's autonomy.
+AI agents like Cline need to perform a wide range of **foundational tasks** to
+be productive, including interacting with project files, fetching web
+information, handling common data formats, and accessing basic system details.
+Requiring the user to manually perform these actions or relying on multiple,
+potentially complex or insecure external tools/MCPs is inefficient, costly (in
+terms of time and tokens), and hinders the agent's autonomy and workflow
+smoothness. Directly granting unrestricted access (e.g., to filesystem or
+network) poses significant security risks.
 
-This NexusTools MCP server acts as a secure and **efficient core toolkit**
-bridge, solving the following problems:
+This NexusTools MCP server aims to be a **secure, efficient, and comprehensive
+"all-in-one" core toolkit** bridge, solving the following problems:
 
-- **Security:** It confines the agent's filesystem operations strictly within
-  the boundaries of the designated project root directory, preventing accidental
-  or malicious access to sensitive system files outside the project scope.
-- **Efficiency & Token Optimization:** It provides the agent with a dedicated
-  set of **essential tools** (`list_files`, `read_content`, `write_content`,
-  `move_items`, `copy_items`, etc.) designed for common agent workflows.
-  - **Batch Operations:** Many tools support operating on multiple
-    files/directories in one request.
-  - **Partial Reads:** The `read_content` tool allows reading specific line
-    ranges, significantly reducing token usage and processing time when dealing
-    with large files.
-- **Control:** Operations are performed relative to the project root, ensuring
-  predictability and consistency.
+- **Security:** It provides a controlled environment for agent operations.
+  Filesystem access is confined within the project root. Basic network requests
+  (`fetch`) include safety measures (timeout, size limits, restricted IPs).
+  Other tools (like data handling, time/OS info) are inherently low-risk.
+- **Efficiency & Cost Reduction:** It provides a consolidated set of **essential
+  foundational tools** spanning filesystem, basic web requests, structured data,
+  and utilities. This reduces the need for multiple MCP calls or complex
+  agent-side logic, saving time and token costs. Efficiency is achieved through:
+  - **Consolidation:** Fewer MCPs for the agent to manage for basic tasks.
+  - **Optimized Tools:** Features like batch operations (filesystem), partial
+    reads (`read_content`), direct data updates (structured data tools), and
+    smart interfaces (`apply_diff`, `get_directory_tree`) minimize data transfer
+    and processing.
+- **Control & Predictability:** Filesystem operations remain relative to the
+  project root. Network operations have defined limits.
 - **Standardization:** It uses the Model Context Protocol (MCP), providing a
-  standardized way for the agent and the server to communicate about core
-  filesystem capabilities and operations.
+  standardized way for the agent and the server to communicate about a broad
+  range of foundational capabilities.
 
 ## 2. How It Should Work
 
@@ -38,11 +42,11 @@ bridge, solving the following problems:
 - Upon receiving a `call_tool` request for a NexusTools operation:
   1. It validates the request parameters against the tool's schema (using Zod).
   2. It resolves all provided relative paths against the `PROJECT_ROOT`.
-  3. It performs security checks to ensure paths do not attempt to escape the
-     `PROJECT_ROOT`.
-  4. It executes the corresponding Node.js filesystem function (`fs.readFile`,
-     `fs.writeFile`, etc.), **handling partial read logic for `read_content`
-     based on `start_line`/`end_line` arguments**.
+  3. It performs relevant security checks (e.g., path validation for filesystem
+     tools, basic network safety for `fetch`).
+  4. It executes the corresponding logic (e.g., Node.js `fs` functions, network
+     requests via `fetch` API, data parsing/manipulation), handling specific
+     optimizations like partial reads.
   5. It formats the result (or error) according to MCP specifications and sends
      it back to the agent.
 - It responds to `list_tools` requests by providing a list of all available
@@ -54,9 +58,10 @@ bridge, solving the following problems:
   background. The user primarily interacts with the agent, and the agent
   utilizes the server's tools as needed.
 - **Security Assurance:** The user should feel confident that the agent's
-  filesystem access is restricted to the intended project directory.
-- **Reliability:** The tools should perform filesystem operations reliably and
-  predictably. Errors should be reported clearly back to the agent.
-- **Performance:** Filesystem operations should be reasonably fast, not
-  introducing significant delays into the agent's workflow. Partial reads should
-  noticeably improve performance when applicable.
+  operations via NexusTools are performed within defined, safe boundaries
+  (project root for files, limited scope for network).
+- **Reliability:** All provided tools should function reliably and predictably.
+  Errors should be reported clearly back to the agent.
+- **Performance:** Operations should be efficient, minimizing delays and token
+  usage, noticeably improving agent productivity compared to alternative
+  methods.
