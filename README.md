@@ -98,6 +98,8 @@ Provides an essential, batch-capable toolset:
 - 📄 **Content Manipulation:** `read_content` (supports partial reads via
   `start_line`/`end_line`), `write_content` (incl. append)
 - ✏️ **Search & Replace:** `search_files` (regex), `replace_content`
+- ✨ **Editing:** `edit_file` (basic string edits with indentation preservation,
+  diff preview, dry run - _experimental_)
 - 🏗️ **Directory Management:** `create_directories`
 - 🗑️ **Deletion:** `delete_items` (recursive)
 - ↔️ **Moving & Copying:** `move_items`, `copy_items`
