@@ -1,71 +1,68 @@
-# Progress: Filesystem MCP Server (v0.4.11 - Final Docs & CI/CD)
+# Progress: NexusTools Core Toolkit MCP Server (v0.1.0 - Refactor In Progress)
 
-## 1. What Works
+## 1. What Works (Post-Initial Refactor)
 
+- **Project Renaming:** Project structure, configuration (`package.json`), and
+  core code (`src/index.ts`) updated to use the "NexusTools" name and version
+  `0.1.0`.
+- **Git Remote:** Old `origin` remote removed.
+- **Core Toolset Structure:**
+  - Handler files for removed tools (`chmod`, `chown`) deleted.
+  - Handler index (`src/handlers/index.ts`) updated.
+  - `read_content` handler modified to include schema and basic logic structure
+    for partial reads (`start_line`/`end_line`).
 - **Server Initialization:** The MCP server starts, connects via stdio, and
-  identifies itself correctly.
-- **Tool Listing:** Responds correctly to `list_tools` requests.
-- **Path Security:** The `resolvePath` function prevents path traversal and
-  rejects absolute paths.
-- **Basic Error Handling:** Handles common errors like `ENOENT`.
-- **Core Tool Functionality (v0.2.0+):** Most tools (`create_directories`,
-  `write_content`, `stat_items`, `read_content`, `move_items`, `copy_items`,
-  `search_files`, `replace_content`, `delete_items`, `list_files` simple case)
-  have passed basic functional tests. Batch operations are supported where
-  applicable.
-- **Documentation (`README.md`):** Significantly improved with clear usage
-  instructions (prioritizing `npx`, adding `bunx` alternative), feature
-  highlights, Docker instructions, and contribution guidelines. JSON examples
-  now correctly **omit comments** for standard JSON compliance.
-- **Dockerization:**
-  - `Dockerfile` created using multi-stage builds.
-  - `.dockerignore` configured correctly.
-  - Build process debugged and corrected (using `npm ci --ignore-scripts`).
-- **CI/CD (GitHub Actions):**
-  - Workflow (`.github/workflows/publish.yml`) successfully automates:
-    - Publishing to npm on `main` branch pushes.
-    - Building and pushing Docker image to Docker Hub (`shtse8/filesystem-mcp`)
-      on `main` branch pushes.
-- **Versioning:** Package version consistently incremented to trigger releases
-  (currently `0.4.11`).
+  identifies itself as "NexusTools".
+- **Tool Listing:** Responds correctly to `list_tools` requests, showing the
+  updated core toolset.
+- **Path Security:** The `resolvePath` function (inherited) prevents path
+  traversal and rejects absolute paths.
+- **Basic Error Handling:** Inherited basic error handling (e.g., `ENOENT`)
+  remains functional.
+- **Documentation (Initial Update):**
+  - `README.md` rewritten for NexusTools.
+  - Memory Bank files (`projectbrief.md`, `productContext.md`,
+    `activeContext.md`, `systemPatterns.md`, `techContext.md`) updated to
+    reflect the new project identity and scope.
 
 ## 2. What's Left to Build / Test
 
-- **Resolve `list_files` Issue (Glob Path):** Fix or thoroughly investigate the
-  `glob`-based execution path within `handleListFiles` used when
-  `recursive: true` or `include_stats: true`.
-- **Comprehensive Testing:**
-  - Test `list_files` with recursion and stats once the underlying issue is
-    resolved/understood.
-  - Test `chmod_items` and `chown_items` in a suitable environment (verify
-    permissions changes, document OS differences).
-  - Test edge cases for all tools (empty arrays, special characters, permissions
-    errors, large numbers of items, large files).
-  - Test cross-device operations for `move_items` and `copy_items` (potential
-    `EXDEV` errors).
-- **Refine Batch Error Handling:** Review and potentially improve reporting for
-  partial success/failure in batch operations.
-- **Code Cleanup:** Remove any remaining debugging logs.
-- **Update Other Memory Bank Files:** Review `systemPatterns.md` and
-  `techContext.md` for consistency with Docker/CI additions.
+- **Verify `read_content` Partial Read Logic:** Thoroughly test the
+  implementation of partial reads, including edge cases (start/end out of
+  bounds, start > end, single line files, empty files).
+- **Review `list_files`:** Decide if the inherited `glob`-based implementation
+  needs simplification for the core toolkit or if the previous issues need
+  addressing.
+- **Comprehensive Testing:** Test all core NexusTools functionalities:
+  - Batch operations for tools that support them.
+  - Edge cases (empty arrays, special characters, permissions errors, large
+    numbers of items).
+  - Cross-device operations for `move_items` and `copy_items` (potential `EXDEV`
+    errors).
+- **Update CI/CD:** Modify `.github/workflows/publish.yml` to use the new
+  package name (`@shtse8/nexus-tools`) and Docker Hub repository name
+  (`shtse8/nexus-tools`).
+- **Code Cleanup:** Remove any remaining debugging logs or unused code
+  fragments.
+- **Commit Changes:** Stage and commit all refactoring changes locally.
+- **New Repository Setup (Optional):** Create a new remote repository and push
+  the code.
 
 ## 3. Current Status
 
-- **Core Functionality Implemented:** All defined tools are implemented.
-- **Deployment Automated:** Publishing to npm and Docker Hub is handled by
-  GitHub Actions.
-- **Documentation Finalized:** `README.md` is comprehensive, reflects current
-  usage recommendations (including `bunx`), and uses standard-compliant JSON
-  examples.
-- **Primary Blocker:** The advanced functionality of `list_files`
-  (recursion/stats via `glob`) remains the main known functional issue requiring
-  investigation.
+- **Refactoring In Progress:** The initial code and documentation updates for
+  the NexusTools identity and core toolset are complete.
+- **Builds Successfully:** The project should build successfully after
+  `npm install`.
+- **Core Functionality Partially Tested:** Basic server startup and tool listing
+  work. Individual tool functionality, especially the modified `read_content`,
+  requires testing.
+- **Deployment Not Configured:** CI/CD workflow needs updating for the new
+  names.
 
 ## 4. Known Issues / Areas for Improvement
 
-- **`list_files` (`glob` path):** May fail or return incorrect results when
-  recursion or stats are enabled. Needs investigation.
-- **Windows `chmod`/`chown`:** Effectiveness is limited by the OS; behavior
-  needs clear documentation.
-- **Cross-Device Moves/Copies:** May fail (`EXDEV`); needs testing and potential
-  fallback logic.
+- **`read_content` Partial Read:** Needs thorough testing.
+- **`list_files` Complexity/Reliability:** Inherited potential complexity or
+  issues from the previous `glob` implementation need review/testing.
+- **Cross-Device Moves/Copies:** May fail (`EXDEV`); needs testing.

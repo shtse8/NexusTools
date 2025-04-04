@@ -48,7 +48,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: shtse8/filesystem-mcp # Replace with your Docker Hub username/repo
+          images: shtse8/nexus-tools # Replace with your Docker Hub username/repo
           tags: |
             type=schedule
             type=ref,event=branch

@@ -4,8 +4,6 @@ import { readContentToolDefinition } from './readContent.js';
 import { writeContentToolDefinition } from './writeContent.js';
 import { deleteItemsToolDefinition } from './deleteItems.js';
 import { createDirectoriesToolDefinition } from './createDirectories.js';
-import { chmodItemsToolDefinition } from './chmodItems.js';
-import { chownItemsToolDefinition } from './chownItems.js';
 import { moveItemsToolDefinition } from './moveItems.js';
 import { copyItemsToolDefinition } from './copyItems.js';
 import { searchFilesToolDefinition } from './searchFiles.js';
@@ -29,8 +27,6 @@ export const allToolDefinitions: ToolDefinition[] = [
     writeContentToolDefinition,
     deleteItemsToolDefinition,
     createDirectoriesToolDefinition,
-    chmodItemsToolDefinition,
-    chownItemsToolDefinition,
     moveItemsToolDefinition,
     copyItemsToolDefinition,
     searchFilesToolDefinition,

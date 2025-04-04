@@ -11,6 +11,8 @@ import { resolvePath } from '../utils/pathUtils.js';
 // Define Zod schema and export it
 export const ReadContentArgsSchema = z.object({
   paths: z.array(z.string()).min(1, { message: "Paths array cannot be empty" }).describe("Array of relative file paths to read."),
+  start_line: z.number().int().positive().optional().describe("The starting line number to read from (1-based)."),
+  end_line: z.number().int().positive().optional().describe("The ending line number to read to (1-based, inclusive)."),
 }).strict();
 
 // Infer TypeScript type
@@ -29,7 +31,7 @@ const handleReadContentFunc = async (args: unknown) => {
       }
       throw new McpError(ErrorCode.InvalidParams, 'Argument validation failed');
   }
-  const { paths: relativePaths } = parsedArgs;
+  const { paths: relativePaths, start_line, end_line } = parsedArgs;
 
   // Define result structure
   // Define result structure
@@ -45,9 +47,37 @@ const handleReadContentFunc = async (args: unknown) => {
       const targetPath = resolvePath(relativePath);
       const stats = await fs.stat(targetPath);
       if (!stats.isFile()) {
-          return { path: pathOutput, error: `Path is not a file` };
+        return { path: pathOutput, error: `Path is not a file` };
       }
-      const content = await fs.readFile(targetPath, 'utf-8');
+
+      let content = await fs.readFile(targetPath, 'utf-8');
+
+      // Handle partial read if start_line or end_line is provided
+      if (start_line || end_line) {
+        const lines = content.split(/\r?\n/);
+        const totalLines = lines.length;
+
+        // Adjust for potentially empty last line after split if file ends with newline
+        // const effectiveTotalLines = content.endsWith('\n') || content.endsWith('\r\n') ? totalLines -1 : totalLines;
+        // Note: Simpler to just use totalLines and let slice handle boundaries.
+
+        const readStart = start_line ? Math.max(1, start_line) : 1; // Default to 1 if only end_line is given
+        const readEnd = end_line ? Math.min(totalLines, end_line) : totalLines; // Default to end if only start_line is given
+
+        if (readStart > readEnd) {
+          return { path: pathOutput, error: `start_line (${readStart}) cannot be greater than end_line (${readEnd})` };
+        }
+        if (readStart > totalLines) {
+            // If start is beyond the file length, return empty content or an error? Let's return empty.
+             content = "";
+        } else {
+            // Slice uses 0-based index, end is exclusive.
+            // Adjust start_line (1-based) to 0-based index.
+            // Adjust end_line (1-based, inclusive) to slice's exclusive end index.
+            content = lines.slice(readStart - 1, readEnd).join('\n');
+        }
+      }
+
       return { path: pathOutput, content: content };
     } catch (error: any) {
       if (error.code === 'ENOENT') {

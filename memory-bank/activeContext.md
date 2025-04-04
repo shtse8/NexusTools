@@ -1,54 +1,57 @@
-# Active Context: Filesystem MCP Server (v0.4.11 - Final Docs & CI/CD)
+# Active Context: NexusTools Refactor (v0.1.0 - In Progress)
 
 ## 1. Current Work Focus
 
-The focus was on finalizing deployment automation and documentation, ensuring
-accuracy and standard compliance.
+Refactoring the previous `filesystem-mcp` project into the new "NexusTools" core
+toolkit MCP server. This involves renaming, adjusting the toolset, updating
+code, documentation, and configuration according to the plan in
+`memory-bank/refactor-plan-nexus-tools.md`.
 
 ## 2. Recent Changes/Decisions
 
-- **README Refinement & Correction:** Iteratively updated `README.md` based on
-  feedback:
-  - Added npm and Docker Hub badges.
-  - Restructured to prioritize `npx` usage as the recommended quick start.
-  - Added instructions and example for using `bunx` as an alternative to `npx`.
-  - Added a dedicated section highlighting key features/selling points (security
-    via relative paths, efficiency via batch operations).
-  - Included detailed instructions for Docker usage, emphasizing volume
-    mounting.
-  - Added/removed/re-added/ **finally removed** comments in JSON examples to
-    ensure **standard JSON compliance** after clarification.
-  - Included sections on development and contributing.
-- **Dockerization:**
-  - Created `.dockerignore` and `Dockerfile` (multi-stage build).
-  - Iteratively debugged `Dockerfile` build issues related to `.dockerignore`
-    exclusions and `npm ci` script execution order, resolving them by using
-    `npm ci --ignore-scripts` and running `npm run build` after copying all
-    source.
-- **CI/CD Setup (GitHub Actions):**
-  - Modified `.github/workflows/publish.yml` to automate publishing to both npm
-    and Docker Hub on pushes to `main`.
-- **Versioning:** Incremented the package version multiple times (up to
-  `0.4.11`) in `package.json` to trigger CI/CD runs for README updates, Docker
-  fixes, and the final JSON comment correction.
+- **Project Renaming:** Project officially renamed to "NexusTools".
+- **Toolset Defined:** Core toolset finalized
+  (list/stat/read(partial)/write/replace/create/delete/move/copy), removing
+  `chmod`/`chown`.
+- **Plan Documented:** Refactor plan saved to
+  `memory-bank/refactor-plan-nexus-tools.md`.
+- **Configuration Updates:**
+  - `package.json`: Updated `name` (@shtse8/nexus-tools), `description`,
+    `version` (0.1.0), `bin` (nexus-tools).
+  - Git: Removed old `origin` remote pointing to local path.
+- **Code Refactoring:**
+  - Deleted handler files: `src/handlers/chmodItems.ts`,
+    `src/handlers/chownItems.ts`.
+  - Updated `src/handlers/index.ts`: Removed references to deleted handlers.
+  - Updated `src/handlers/readContent.ts`: Added support for partial reads via
+    `start_line`/`end_line`.
+  - Updated `src/index.ts`: Changed server name, version, description, and log
+    messages to "NexusTools".
+- **Dependency Management:** Ran `npm install` to ensure dependencies are
+  correctly installed.
+- **Documentation Updates:**
+  - Rewrote `README.md` for NexusTools.
+  - Updated `memory-bank/projectbrief.md`.
+  - Updated `memory-bank/productContext.md`.
 
 ## 3. Next Steps / Considerations
 
-- **Verify CI/CD:** Confirm the latest GitHub Actions run (triggered by commit
-  `3efa65b` for version `0.4.11`) successfully published to both npm and Docker
-  Hub with the _correct_ README (JSON comments removed).
-- **Resolve `list_files` / Server Reload Issue:** (Previous issue) The primary
-  remaining _functional_ issue is diagnosing why the `glob`-based path in
-  `list_files` wasn't working reliably.
-- **Comprehensive Testing:** Perform thorough testing (edge cases, `list_files`
-  advanced modes, permissions, batch errors).
-- **Update Other Memory Bank Files:** Review `progress.md`, `systemPatterns.md`,
-  and `techContext.md` for consistency.
+- **Update Remaining Memory Bank:**
+  - Update `memory-bank/systemPatterns.md`.
+  - Update `memory-bank/techContext.md`.
+  - Reset/Update `memory-bank/progress.md`.
+- **Update CI/CD:** Modify `.github/workflows/publish.yml` for the new
+  package/Docker names.
+- **Commit Changes:** Stage and commit all refactoring changes locally.
+- **New Repository (Optional):** Create a new remote repository (e.g., on
+  GitHub) for NexusTools.
+- **Push to New Remote (Optional):** Add the new remote and push the changes.
+- **Testing:** Thoroughly test all NexusTools functionalities, especially the
+  modified `read_content` tool.
 
 ## 4. Active Decisions
 
-- `npx` is the primary recommended usage method in the documentation.
-- Docker support is implemented and automated via GitHub Actions.
-- The `Dockerfile` build process is corrected.
-- The `README.md` structure and content are finalized, including `bunx`
-  instructions, with JSON examples adhering to standard JSON (no comments).
+- Project name is "NexusTools".
+- Core toolset is defined as per the plan.
+- Refactoring is proceeding based on `memory-bank/refactor-plan-nexus-tools.md`.
+- Version reset to `0.1.0`.

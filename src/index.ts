@@ -21,9 +21,9 @@ import { allToolDefinitions } from './handlers/index.js';
 
 const server = new Server(
   {
-    name: "filesystem-mcp",
-    version: "0.4.0", // Increment version for definition refactor
-    description: "MCP Server for filesystem operations relative to the project root."
+    name: "nexus-tools",
+    version: "0.1.0", // Reset version for the new toolkit
+    description: "MCP Server providing a core toolkit for AI agents."
   },
   {
     capabilities: { tools: {} },
@@ -66,10 +66,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error('[Filesystem MCP] Server running on stdio');
+  console.error('[NexusTools MCP] Server running on stdio');
 }
 
 main().catch((error) => {
-  console.error("[Filesystem MCP] Server error:", error);
+  console.error("[NexusTools MCP] Server error:", error);
   process.exit(1);
 });
