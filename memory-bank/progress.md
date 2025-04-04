@@ -30,9 +30,8 @@
 - **Verify `read_content` Partial Read Logic:** Thoroughly test the
   implementation of partial reads, including edge cases (start/end out of
   bounds, start > end, single line files, empty files).
-- **Review `list_files`:** Decide if the inherited `glob`-based implementation
-  needs simplification for the core toolkit or if the previous issues need
-  addressing.
+- **Review `list_files`:** (Done) Confirmed working correctly after path
+  resolution fix. No simplification needed currently.
 - **Comprehensive Testing:** Test all core NexusTools functionalities:
   - Batch operations for tools that support them.
   - Edge cases (empty arrays, special characters, permissions errors, large
@@ -63,6 +62,6 @@
 ## 4. Known Issues / Areas for Improvement
 
 - **`read_content` Partial Read:** Needs thorough testing.
-- **`list_files` Complexity/Reliability:** Inherited potential complexity or
-  issues from the previous `glob` implementation need review/testing.
+- **`list_files` Complexity/Reliability:** (Resolved) Tool confirmed working
+  correctly in all modes after path resolution fix.
 - **Cross-Device Moves/Copies:** May fail (`EXDEV`); needs testing.

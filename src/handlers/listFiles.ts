@@ -56,7 +56,7 @@ const handleListFilesFunc = async (args: unknown) => {
       // const globPattern = path.join(relativeInputPath, recursive ? '**/*' : '*').replace(/\\/g, '/'); // Old pattern relative to PROJECT_ROOT
 
       // --- Use fs.readdir for simple, non-recursive, no-stats case ---
-      if (!recursive && !includeStats) {
+      if (!recursive) { // Use readdir for ALL non-recursive cases
           // Removed debug log
           const names = await fs.readdir(targetAbsolutePath);
           for (const name of names) {
@@ -73,8 +73,23 @@ const handleListFilesFunc = async (args: unknown) => {
                   // For now, just skip adding the trailing slash if stat fails
               }
               const displayPath = isDirectory ? `${itemRelativePath.replace(/\\/g, '/')}/` : itemRelativePath.replace(/\\/g, '/');
-              results.push({ path: displayPath });
-          }
+              // Conditionally add stats if requested
+              if (includeStats) {
+                  let statsResult: ReturnType<typeof formatStats> | { error: string } | undefined = undefined;
+                  try {
+                      // We already have itemStats from line 68 if stat didn't fail
+                      const itemFullPath = path.resolve(targetAbsolutePath, name); // Re-resolve needed? No, use itemStats from above if available
+                      const itemStats = await fs.stat(itemFullPath); // Re-statting here for simplicity, could optimize
+                      statsResult = formatStats(itemRelativePath, itemFullPath, itemStats);
+                  } catch (statError: any) {
+                       // Error already warned about on line 71
+                       statsResult = { error: `Could not get stats: ${statError.message}` };
+                  }
+                  results.push({ path: displayPath, stats: statsResult });
+              } else {
+                  results.push({ path: displayPath });
+              }
+          } // End for loop
       } else {
           // --- Use glob for recursive or stats-included cases ---
           const globPattern = recursive ? '**/*' : '*';

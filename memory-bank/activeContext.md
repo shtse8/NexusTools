@@ -33,6 +33,19 @@ code, documentation, and configuration according to the plan in
   - Rewrote `README.md` for NexusTools.
   - Updated `memory-bank/projectbrief.md`.
   - Updated `memory-bank/productContext.md`.
+- **Debugging Filesystem Access:**
+  - Encountered issues where the MCP server (running via `bunx`) couldn't access
+    files (e.g., in `memory-bank/`) despite them existing. `list_files .` also
+    returned incomplete results.
+  - Modified `mcp_settings.json` to run the local build (`node build/index.js`)
+    for debugging.
+  - Identified that the server's internal path resolution was likely incorrect
+    (though the exact fix was applied externally).
+  - Confirmed after the external fix and reloading the server that path
+    resolution and `list_files` (including recursive and stats modes) now work
+    correctly.
+  - Updated `memory-bank/progress.md` to reflect the resolution of `list_files`
+    issues.
 
 ## 3. Next Steps / Considerations
 
@@ -47,7 +60,7 @@ code, documentation, and configuration according to the plan in
   GitHub) for NexusTools.
 - **Push to New Remote (Optional):** Add the new remote and push the changes.
 - **Testing:** Thoroughly test all NexusTools functionalities, especially the
-  modified `read_content` tool.
+  modified `read_content` tool (filesystem access is now confirmed working).
 
 ## 4. Active Decisions
 
