@@ -20,7 +20,7 @@
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
     "@types/diff": "^7.0.2",
     "diff": "^7.0.0",
     "glob": "^11.0.1",
