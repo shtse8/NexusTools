@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:20-alpine AS builder
+FROM node:26-alpine AS builder
 WORKDIR /app
 
 # Copy package files
@@ -21,7 +21,7 @@ RUN npm run build
 RUN npm prune --omit=dev
 
 # Stage 2: Create the final lightweight image
-FROM node:20-alpine
+FROM node:26-alpine
 WORKDIR /app
 
 # Create a non-root user and group for security
